@@ -7,7 +7,7 @@ from sklearn.pipeline import make_pipeline
 # for model training, tuning, and evaluation
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.model_selection import GridSearchCV
-from sklearn.metrics import accuracy_score, classification_report, recall_score
+from sklearn.metrics import accuracy_score, classification_report, recall_score, f1_score
 # for model serialization
 import joblib
 # for creating a folder
@@ -83,6 +83,23 @@ print(classification_report(ytrain, y_pred_train))
 
 print("\nTest Classification Report:")
 print(classification_report(ytest, y_pred_test))
+
+# Calculate and save metrics
+test_recall = recall_score(ytest, y_pred_test)
+test_f1 = f1_score(ytest, y_pred_test)
+
+metrics_data = {
+    'Date': [datetime.now().strftime("%Y-%m-%d")],
+    'Test Recall': [test_recall],
+    'Test F1-score': [test_f1]
+}
+metrics_df = pd.DataFrame(metrics_data)
+
+metrics_filename = f"metrics_{datetime.now().strftime('%Y%m%d')}.csv"
+metrics_df.to_csv(metrics_filename, index=False)
+
+print(f"\nMetrics saved to {metrics_filename}")
+
 
 latest_name = "best_pima_diabetes_model_latest.joblib"
 current_date = datetime.now().strftime("%Y%m%d")
