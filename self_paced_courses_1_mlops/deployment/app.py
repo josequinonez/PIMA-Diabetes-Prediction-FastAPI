@@ -9,8 +9,9 @@ app = FastAPI()
 
 # Download and load the model
 # Replace "josequinonez/PIMA-Diabetes-Prediction-FastAPI" with your actual Hugging Face repo ID if different
+latest_name = "best_pima_diabetes_model_latest.joblib"
 model_path = hf_hub_download(repo_id="josequinonez/PIMA-Diabetes-Prediction-FastAPI",
-                             filename="best_pima_diabetes_model_v1.joblib", repo_type="model")
+                             filename=latest_name, repo_type="model")
 model = joblib.load(model_path)
 
 # Define the input data structure using Pydantic

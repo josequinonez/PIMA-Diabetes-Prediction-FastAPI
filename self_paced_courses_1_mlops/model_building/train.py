@@ -16,6 +16,8 @@ import os
 from huggingface_hub import login, HfApi, create_repo
 from huggingface_hub.utils import RepositoryNotFoundError, HfHubHTTPError
 
+from datetime import datetime
+
 api = HfApi()
 
 Xtrain_path = "hf://datasets/josequinonez/PIMA-Diabetes-Prediction-FastAPI/Xtrain.csv"                    # enter the Hugging Face username here
@@ -82,8 +84,14 @@ print(classification_report(ytrain, y_pred_train))
 print("\nTest Classification Report:")
 print(classification_report(ytest, y_pred_test))
 
+latest_name = "best_pima_diabetes_model_latest.joblib"
+current_date = datetime.now().strftime("%Y%m%d")
+date_name = f"best_pima_diabetes_model_{current_date}.joblib"
+
+
 # Save best model
-joblib.dump(best_model, "best_pima_diabetes_model_v1.joblib")
+joblib.dump(best_model, latest_name)
+joblib.dump(best_model, date_name)
 
 # Upload to Hugging Face
 repo_id = "josequinonez/PIMA-Diabetes-Prediction-FastAPI"                                         # enter the Hugging Face username here
@@ -102,8 +110,15 @@ except RepositoryNotFoundError:
 
 # create_repo("best_machine_failure_model", repo_type="model", private=False)
 api.upload_file(
-    path_or_fileobj="best_pima_diabetes_model_v1.joblib",
-    path_in_repo="best_pima_diabetes_model_v1.joblib",
+    path_or_fileobj=latest_name,
+    path_in_repo=latest_name,
+    repo_id=repo_id,
+    repo_type=repo_type,
+)
+
+api.upload_file(
+    path_or_fileobj=date_name,
+    path_in_repo=date_name,
     repo_id=repo_id,
     repo_type=repo_type,
 )
